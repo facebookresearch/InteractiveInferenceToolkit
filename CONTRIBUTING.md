@@ -32,9 +32,10 @@ disclosure of security bugs. In those cases, please go through the process
 sutlined on that page and do not file a public issue.
 
 ## Coding Style  
-* 2 spaces for indentation rather than tabs
-* 80 character line length
-* ...
+* 4 spaces for indentation rather than tabs
+* 79 character line length when sensible
+* Look to the [black formatter](https://github.com/psf/black) for style guidance
+* Look to [PEP8](https://peps.python.org/pep-0008/) for style guidance
 
 ## License
 By contributing to InteractiveInferenceToolkit, you agree that your contributions will be licensed
