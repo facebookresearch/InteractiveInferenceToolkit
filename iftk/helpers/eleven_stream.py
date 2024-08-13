@@ -8,7 +8,7 @@ from typing import Optional
 from elevenlabs.client import ElevenLabs
 
 
-async def eleven_tts(
+async def ElevenStream(
     sentences: AsyncIterator,
     eleven_client: ElevenLabs,
     messages: Optional[dict] = None,

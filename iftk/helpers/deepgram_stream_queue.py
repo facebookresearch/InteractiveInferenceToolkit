@@ -3,7 +3,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-
 import asyncio
 import json
 import pyaudio
@@ -19,7 +18,7 @@ SECONDS = 2
 WSS_URL = "wss://api.deepgram.com/v1/listen?endpointing=500&encoding=linear16&sample_rate=16000&channels=1&interim_results=false"
 
 
-async def deepgram_stream(key: str, transcription_queue: asyncio.Queue) -> None:
+async def DeepgramStream(key: str, transcription_queue: asyncio.Queue) -> None:
     """Put ASR results from Deepgram streaming API in an asyncio.Queue.
 
     Args:
