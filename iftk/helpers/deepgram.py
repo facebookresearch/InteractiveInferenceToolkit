@@ -8,7 +8,7 @@ import json
 
 import pyaudio
 import websockets
-from .microphone import microphone_async
+from .pyaudio import microphone_async
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
