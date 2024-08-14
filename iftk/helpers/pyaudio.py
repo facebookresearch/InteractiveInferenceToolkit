@@ -8,7 +8,7 @@ import asyncio
 import pyaudio
 
 
-async def microphone_async(
+async def microphone(
     format: int,
     rate: int,
     frames_per_buffer: int,

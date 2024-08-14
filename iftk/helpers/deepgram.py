@@ -8,7 +8,7 @@ import json
 
 import pyaudio
 import websockets
-from .pyaudio import microphone_async
+from .pyaudio import microphone
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -69,7 +69,7 @@ async def deepgram_stream(key: str, transcription_queue: asyncio.Queue) -> None:
                     transcript = ""
 
         microphone_task = asyncio.create_task(
-            microphone_async(
+            microphone(
                 format=FORMAT,
                 rate=RATE,
                 frames_per_buffer=DEEPGRAM_CHUNK,
