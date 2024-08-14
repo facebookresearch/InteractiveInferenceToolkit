@@ -5,8 +5,10 @@
 
 import asyncio
 import json
+
 import pyaudio
 import websockets
+from .microphone import microphone_async
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -18,7 +20,7 @@ SECONDS = 2
 WSS_URL = "wss://api.deepgram.com/v1/listen?endpointing=500&encoding=linear16&sample_rate=16000&channels=1&interim_results=false"
 
 
-async def DeepgramStream(key: str, transcription_queue: asyncio.Queue) -> None:
+async def deepgram_stream(key: str, transcription_queue: asyncio.Queue) -> None:
     """Put ASR results from Deepgram streaming API in an asyncio.Queue.
 
     Args:
@@ -28,10 +30,11 @@ async def DeepgramStream(key: str, transcription_queue: asyncio.Queue) -> None:
     """
     extra_headers = {"Authorization": f"Token {key}"}
     audio_queue = asyncio.Queue()
+    loop = asyncio.get_running_loop()
 
-    def callback(in_data, frame_count, time_info, status):
+    def callback(in_data, frame_count, time_info, status) -> tuple[None, int]:
         """A basic callback for Deepgram's stream."""
-        audio_queue.put_nowait(in_data)
+        loop.call_soon_threadsafe(audio_queue.put_nowait, in_data)
         return (None, pyaudio.paContinue)
 
     async with websockets.connect(
@@ -43,36 +46,14 @@ async def DeepgramStream(key: str, transcription_queue: asyncio.Queue) -> None:
             while True:
                 keep_alive_msg = json.dumps({"type": "KeepAlive"})
                 websocket.send(keep_alive_msg)
-                print("KeepAlive message sent")
                 await asyncio.sleep(3)
 
-        asyncio.create_task(keep_alive(websocket=ws))
-
-        async def microphone():
-            audio = pyaudio.PyAudio()
-            stream = audio.open(
-                format=FORMAT,
-                channels=CHANNELS,
-                rate=DEEPGRAM_RATE,
-                input=True,
-                frames_per_buffer=DEEPGRAM_CHUNK,
-                stream_callback=callback,
-            )
-
-            stream.start_stream()
-            while stream.is_active():
-                await asyncio.sleep(0.1)
-
-            stream.stop_stream()
-            stream.close()
+        keep_alive_task = asyncio.create_task(keep_alive(websocket=ws))
 
         async def sender(ws):
-            try:
-                while True:
-                    data = await audio_queue.get()
-                    await ws.send(data)
-            except Exception as e:
-                raise e
+            while True:
+                data = await audio_queue.get()
+                await ws.send(data)
 
         async def receiver(ws):
             transcript = ""
@@ -83,17 +64,23 @@ async def DeepgramStream(key: str, transcription_queue: asyncio.Queue) -> None:
                     if transcript:
                         transcript += " "
                     transcript += msg["channel"]["alternatives"][0]["transcript"]
-                    if msg["speech_final"]:
-                        yield transcript
-                        transcript = ""
+                if msg["speech_final"]:
+                    yield transcript
+                    transcript = ""
 
-        microphone_task = asyncio.ensure_future(microphone())
-        sender_task = asyncio.ensure_future(sender(ws))
+        microphone_task = asyncio.create_task(
+            microphone_async(
+                format=FORMAT,
+                rate=RATE,
+                frames_per_buffer=DEEPGRAM_CHUNK,
+                callback=callback,
+            )
+        )
+        sender_task = asyncio.create_task(sender(ws))
 
         async for update in receiver(ws):
             transcription_queue.put_nowait(update)
 
-        tasks = [microphone_task, sender_task]
+        tasks = [microphone_task, sender_task, keep_alive_task]
         for task in tasks:
-            if not task.done():
-                task.cancel()
+            task.cancel()

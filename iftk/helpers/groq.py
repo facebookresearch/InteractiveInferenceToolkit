@@ -4,10 +4,11 @@
 # LICENSE file in the root directory of this source tree.
 
 from typing import AsyncIterator
+
 import groq
 
 
-async def GroqProcessor(llm_stream: groq._client.AsyncStream) -> AsyncIterator:
+async def groq_sentence_stream(llm_stream: groq._client.AsyncStream) -> AsyncIterator:
     """An AsyncIterator wrapper for the groq generation stream.
 
     Args:
@@ -25,5 +26,6 @@ async def GroqProcessor(llm_stream: groq._client.AsyncStream) -> AsyncIterator:
             sentence += new_text
         else:
             sentence += new_text
-            yield sentence
+            if sentence:
+                yield sentence
             sentence = ""

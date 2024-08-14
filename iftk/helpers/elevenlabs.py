@@ -3,17 +3,16 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import AsyncIterator
-from typing import Optional
+from typing import AsyncIterator, Iterator, Optional
+
 from elevenlabs.client import ElevenLabs
 
 
-async def ElevenStream(
-    sentences: AsyncIterator,
+async def eleven_stream(
+    sentences: AsyncIterator[str],
     eleven_client: ElevenLabs,
-    messages: Optional[dict] = None,
     voice: Optional[str] = "Jessica",
-) -> AsyncIterator:
+) -> AsyncIterator[Iterator[bytes]]:
     """An AsyncIterator wrapper for the 11Labs TTS generation stream.
 
     Args:
@@ -24,13 +23,9 @@ async def ElevenStream(
     Yields:
         Iterator[AsyncIterator]: A bytes iterator for playing audio using 11Labs stream audio playing function.
     """
-    full_response = ""
     async for sentence in sentences:
-        if sentence != "":
-            full_response += sentence
+        if sentence:
             audio_stream = eleven_client.generate(
                 text=sentence, stream=True, voice=voice
             )
             yield audio_stream
-    if messages:
-        messages.append({"role": "assistant", "content": full_response})

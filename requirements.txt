@@ -1,7 +1,0 @@
-pyaudio
-deepgram-sdk
-python-dotenv
-websockets
-deepgram-sdk
-groq
-elevenlabs
