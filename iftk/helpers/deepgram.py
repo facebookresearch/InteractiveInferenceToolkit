@@ -9,12 +9,6 @@ from typing import AsyncIterator
 
 import websockets
 
-CHANNELS = 1
-RATE = 44100
-CHUNK = 512
-DEEPGRAM_CHUNK = 8000
-DEEPGRAM_RATE = 16000
-SECONDS = 2
 WSS_URL = "wss://api.deepgram.com/v1/listen?endpointing=500&encoding=linear16&sample_rate=16000&channels=1&interim_results=false"
 
 
@@ -55,9 +49,9 @@ async def deepgram_stream(
                     if transcript:
                         transcript += " "
                     transcript += msg["channel"]["alternatives"][0]["transcript"]
-                    if msg["speech_final"]:
-                        yield transcript
-                        transcript = ""
+                if msg["speech_final"]:
+                    yield transcript
+                    transcript = ""
 
         sender_task = asyncio.create_task(sender(ws))
 
