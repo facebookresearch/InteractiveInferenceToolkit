@@ -36,7 +36,8 @@ class TestDeepgram(unittest.IsolatedAsyncioTestCase):
         deepgram_iterator = deepgram_stream(
             DEEPGRAM_KEY, stream_file(AUDIO_FILE, CHUNK)
         )
-        assert type(await anext(deepgram_iterator)) == str
+        result = await anext(deepgram_iterator)
+        self.assertIsInstance(result, str)
 
 
 if __name__ == "__main__":
