@@ -28,7 +28,6 @@ async def stream_file(filepath: str, chunk: int) -> AsyncIterator[bytes]:
     for _ in range(ceil(w.getnframes() / CHUNK)):
         data = w.readframes(chunk)
         yield data
-        await asyncio.sleep(0.0)
 
 
 class TestDeepgram(unittest.IsolatedAsyncioTestCase):
