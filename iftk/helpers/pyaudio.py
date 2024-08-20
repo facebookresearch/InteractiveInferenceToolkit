@@ -4,37 +4,41 @@
 # LICENSE file in the root directory of this source tree.
 
 import asyncio
+from typing import AsyncIterator
 
 import pyaudio
 
 
-async def microphone(
-    format: int,
-    rate: int,
-    frames_per_buffer: int,
-    callback: pyaudio._StreamCallback,
-):
-    """A streaming-friendly PyAudio microphone interface.
+async def microphone(rate: int, frames_per_buffer: int) -> AsyncIterator[bytes]:
+    """An AsyncIterator-friendly PyAudio microphone stream.
 
     Args:
-        format (int): The audio format, commonly pyaudio.paInt16
-        rate (int): The audio recording sampling rate.
-        frames_per_buffer (int): An arbitrarily chosen number of frames for the signals to be split into.
-        callback (pyaudio._StreamCallback): A callback function, commonly in the form of an asyncio.Queue() thread-safe wrapper.
+        rate (int): Sampling rate for the microphone recording.
+        frames_per_buffer (int): Chunk size of microphone recordings.
+
+    Yields:
+        bytes: A recorded audio chunk.
     """
-    audio = pyaudio.PyAudio()
-    stream = audio.open(
-        format=format,
-        channels=1,
+    loop = asyncio.get_event_loop()
+    queue = asyncio.Queue()
+    pa = pyaudio.PyAudio()
+
+    def put(in_data, frame_count, time_info, status):
+        loop.call_soon_threadsafe(queue.put_nowait, in_data)
+        return (None, pyaudio.paContinue)
+
+    async def get():
+        while True:
+            yield await queue.get()
+
+    stream = pa.open(
+        stream_callback=put,
         rate=rate,
+        format=pyaudio.paInt16,
+        channels=1,
         input=True,
         frames_per_buffer=frames_per_buffer,
-        stream_callback=callback,
     )
-
     stream.start_stream()
-    while stream.is_active():
-        await asyncio.sleep(0.1)
-
-    stream.stop_stream()
-    stream.close()
+    async for chunk in get():
+        yield chunk
