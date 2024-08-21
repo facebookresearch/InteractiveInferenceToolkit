@@ -45,4 +45,5 @@ async def main():
                 await asyncio.to_thread(stream, sentence)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
