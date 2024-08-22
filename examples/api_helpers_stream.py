@@ -31,18 +31,17 @@ async def main():
         key=DEEPGRAM_API_KEY, audio_stream=mic_stream
     )
     async for user_message in deepgram_stream:
-        if user_message:
-            messages.append({"role": "user", "content": user_message})
-            llm_stream = await groq_client.chat.completions.create(
-                messages=messages, model=model_id, stream=True
-            )
-            groq_sentence_stream: AsyncIterator = groq.groq_sentence_stream(
-                llm_stream=llm_stream
-            )
-            async for sentence in elevenlabs.eleven_stream(
-                sentences=groq_sentence_stream, eleven_client=elevenlabs_client
-            ):
-                await asyncio.to_thread(stream, sentence)
+        messages.append({"role": "user", "content": user_message})
+        llm_stream = await groq_client.chat.completions.create(
+            messages=messages, model=model_id, stream=True
+        )
+        groq_sentence_stream: AsyncIterator = groq.groq_sentence_stream(
+            llm_stream=llm_stream
+        )
+        async for sentence in elevenlabs.eleven_stream(
+            sentences=groq_sentence_stream, eleven_client=elevenlabs_client
+        ):
+            await asyncio.to_thread(stream, sentence)
 
 
 if __name__ == "__main__":

@@ -59,7 +59,8 @@ async def deepgram_stream(
         sender_task = asyncio.create_task(sender(ws))
 
         async for update in receiver(ws):
-            yield update
+            if update:
+                yield update
 
         tasks = [sender_task, keep_alive_task]
         for task in tasks:
