@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 from iftk.helpers.silero_vad import silero_vad_stream
 
 AUDIO_FILE = "tests/helpers/audio_test.wav"
-CHUNK = 512
+CHUNK = 512*8
 RATE = 16000
 
 
