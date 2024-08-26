@@ -6,9 +6,6 @@
 import os
 import sys
 import unittest
-import wave
-from math import ceil
-from typing import AsyncIterator
 
 from .test_deepgram_stream import stream_file
 

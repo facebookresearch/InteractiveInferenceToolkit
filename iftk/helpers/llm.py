@@ -7,8 +7,12 @@ from asyncio import to_thread
 from typing import AsyncIterator
 
 import torch
-from transformers import (AutoModelForCausalLM, AutoTokenizer,
-                          BitsAndBytesConfig, TextIteratorStreamer)
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    TextIteratorStreamer,
+)
 
 
 async def llm_stream(

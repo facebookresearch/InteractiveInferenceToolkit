@@ -15,6 +15,7 @@ from iftk.helpers.llm import llm_stream
 MODEL_ID = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 messages = [{"role": "user", "content": "How are you doing?"}]
 
+
 class TestLLM(unittest.IsolatedAsyncioTestCase):
     async def test_llm(self):
         async for token in llm_stream(model_id=MODEL_ID, messages=messages):

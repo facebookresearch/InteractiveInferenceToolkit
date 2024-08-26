@@ -20,7 +20,7 @@ async def deepgram_stream(
     Args:
         key (str): Your Deepgram API key
         audio_stream (AsyncIterator[bytes]): An AsyncIterator-compatible audio iterator, commonly in the form of streaming file or audio input.
-        
+
     Yields:
         str: A sentence of text.
     """
