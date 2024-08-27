@@ -18,7 +18,8 @@ class TestXTTS(unittest.IsolatedAsyncioTestCase):
     async def test_xtts_chunks(self):
         sample_message = "Hello there!"
         async for chunk in xtts_stream(message=sample_message):
-            assert type(chunk) == torch.Tensor
+            self.assertIsInstance(chunk, torch.Tensor)
+            self.assertGreater(len(chunk), 1_000)
 
 
 if __name__ == "__main__":

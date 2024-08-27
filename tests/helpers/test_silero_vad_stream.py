@@ -21,7 +21,7 @@ RATE = 16000
 class TestSileroVAD(unittest.IsolatedAsyncioTestCase):
     async def test_vad(self):
         async for timestamp in silero_vad_stream(stream_file(AUDIO_FILE, chunk=CHUNK)):
-            assert type(timestamp) == list
+            self.assertIsInstance(timestamp, list)
 
 
 if __name__ == "__main__":

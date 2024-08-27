@@ -15,9 +15,20 @@ from transformers import (
 )
 
 
-async def llm_stream(
+async def transformer_stream(
     model_id: str, messages: list, quantize: bool = True, max_new_tokens: int = 50
 ) -> AsyncIterator[str]:
+    """A streaming wrapper for AsyncIterator-form transformer chat generation outputs.
+
+    Args:
+        model_id (str): The model ID according to HuggingFace
+        messages (list): A message list in the form of a HuggingFace chat template
+        quantize (bool, optional): Flag to add quantization to model generation. Model must support 4-bit quantization. Defaults to True.
+        max_new_tokens (int, optional): Maximum tokens to generate. Defaults to 50.
+
+    Yields:
+        AsyncIterator[str]: A generated string token.
+    """
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     streamer = TextIteratorStreamer(tokenizer=tokenizer)
     if quantize:

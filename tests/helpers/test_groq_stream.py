@@ -27,8 +27,8 @@ class TestGroq(unittest.IsolatedAsyncioTestCase):
             messages=messages, model=model_id, stream=True
         )
         async for sentence in groq_sentence_stream(llm_stream):
+            self.assertIsInstance(sentence, str)
             assert sentence
-            assert type(sentence) == str
             assert (
                 sentence[-1] == "." or sentence[-1] == "?"
             )  # sentences must end on period or question mark

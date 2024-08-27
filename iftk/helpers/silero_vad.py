@@ -24,7 +24,7 @@ async def silero_vad_stream(
         sample_rate (int, optional): The sample rate for Silero VAD. Defaults to 16000.
 
     Yields:
-        Iterator[AsyncIterator[list]]: Voice activity timestamp of its respective audio chunk.
+        AsyncIterator[list]: Voice activity timestamp of its respective audio chunk.
     """
     model = load_silero_vad()
     async for chunk in audio_feed:
