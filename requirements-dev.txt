@@ -6,6 +6,7 @@ elevenlabs==1.6.1
 groq==0.9.0
 isort==5.13.2
 numpy==1.25.2
+openai-whisper==20231117
 pyaudio==0.2.14
 python-dotenv==1.0.1
 silero-vad==5.1
