@@ -17,7 +17,7 @@ from iftk.helpers import pyaudio, silero_vad, transformers, whisper, xtts
 MODEL_ID = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 CHUNK = 512 * 100
 RATE = 16000
-messages = [{"role": "user", "content": "How are you doing?"}]
+messages = [{"role": "system", "content": "Respond in a few sentences."}]
 
 
 async def main():
