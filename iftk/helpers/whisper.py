@@ -3,8 +3,8 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import AsyncIterator
 from asyncio import to_thread
+from typing import AsyncIterator
 
 import numpy as np
 import whisper
@@ -33,4 +33,5 @@ async def whisper_stream(
         if not buffer.any():
             break
         result = await to_thread(model.transcribe, buffer, language=language)
-        yield result["text"]
+        if result["text"]:
+            yield result["text"]
