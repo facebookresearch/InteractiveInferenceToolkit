@@ -51,7 +51,7 @@ async def main():
                     wav /= np.max(
                         np.abs(wav), axis=0
                     )  # Scale Tensor to -1 to 1 to be played by sounddevice
-                    await to_thread(sd.play, data=wav)
+                    await to_thread(sd.play, data=wav, blocking=True)
                 assistant_turn += token
                 assistant_turn += " "
             messages.append({"role": "assistant", "content": assistant_turn})
