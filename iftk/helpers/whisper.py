@@ -24,7 +24,7 @@ async def whisper_stream(
     Yields:
         AsyncIterator[str]: The text result of the transcription.
     """
-    model = whisper.load_model(model_size)
+    model = await to_thread(whisper.load_model, name=model_size)
     async for chunk in audio_feed:
         buffer = (
             np.frombuffer(buffer=chunk, dtype=np.int16).flatten().astype(np.float32)

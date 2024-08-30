@@ -35,11 +35,16 @@ async def transformer_stream(
         config = BitsAndBytesConfig(
             load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16
         )
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id, device_map="auto", quantization_config=config
+        model = await to_thread(
+            AutoModelForCausalLM.from_pretrained,
+            model_id,
+            device_map="auto",
+            quantization_config=config,
         )
     else:
-        model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
+        model = await to_thread(
+            AutoModelForCausalLM.from_pretrained, model_id, device_map="auto"
+        )
     tokenized_messages = tokenizer.apply_chat_template(
         messages, add_generation_prompt=True, return_tensors="pt"
     ).to(model.device)

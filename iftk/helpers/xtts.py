@@ -35,8 +35,10 @@ async def xtts_stream(
         get_user_data_dir("tts"), "tts_models--multilingual--multi-dataset--xtts_v2"
     )
     config.load_json(os.path.join(model_path, "config.json"))
-    xtts_model = Xtts.init_from_config(config)
-    xtts_model.load_checkpoint(config, checkpoint_dir=model_path)
+    xtts_model = await to_thread(Xtts.init_from_config, config=config)
+    await to_thread(
+        xtts_model.load_checkpoint, config=config, checkpoint_dir=model_path
+    )
     if torch.cuda.is_available() and gpu:
         xtts_model.cuda()
     gpt_cond_latent, speaker_embedding = xtts_model.speaker_manager.speakers[

@@ -26,7 +26,7 @@ async def silero_vad_stream(
     Yields:
         AsyncIterator[list]: Voice activity timestamp of its respective audio chunk.
     """
-    model = load_silero_vad()
+    model = await to_thread(load_silero_vad, onnx=False)
     async for chunk in audio_feed:
         wav_bytes_io = io.BytesIO()
         raw_data = np.frombuffer(buffer=chunk, dtype=np.int16)
