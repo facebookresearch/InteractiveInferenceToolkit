@@ -1,7 +1,17 @@
+accelerate==0.33.0
+bitsandbytes==0.43.3
+coqui-tts==0.24.1
 deepgram-sdk==3.4.0
 elevenlabs==1.6.1
 groq==0.9.0
 isort==5.13.2
+numpy==1.25.2
+openai-whisper==20231117
 pyaudio==0.2.14
 python-dotenv==1.0.1
+silero-vad==5.1
+sounddevice==0.5.0
+torch==2.4.0
+torchaudio==2.4.0
+transformers==4.40.2
 websockets==12.0
