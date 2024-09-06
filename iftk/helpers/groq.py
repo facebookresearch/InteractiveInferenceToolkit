@@ -48,7 +48,7 @@ class GroqChannel(AsyncChannel):
         yield await anext(self.groq_stream)
 
 
-class ElevenlabsSystem(System):
+class GroqSystem(System):
     async def create_async_channel(
         self,
         sentence_stream: groq._client.AsyncStream,
