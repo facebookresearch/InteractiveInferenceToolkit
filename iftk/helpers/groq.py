@@ -44,7 +44,7 @@ class GroqChannel(AsyncChannel):
         self.sentence_stream = sentence_stream
         self.groq_stream = groq_sentence_stream(sentence_stream=sentence_stream)
 
-    async def read(self) -> AsyncIterator[bytes]:
+    async def read(self) -> AsyncIterator[str]:
         yield await anext(self.groq_stream)
 
 
