@@ -5,7 +5,7 @@
 
 import asyncio
 import json
-from typing import AsyncIterator
+from typing import Any, AsyncIterator, Callable
 
 import websockets
 
