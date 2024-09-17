@@ -9,9 +9,6 @@ from typing import Any, AsyncIterator, Callable
 
 import websockets
 
-from iftk.channel import AsyncChannel
-from iftk.system import System
-
 WSS_URL = "wss://api.deepgram.com/v1/listen?endpointing=500&encoding=linear16&sample_rate=16000&channels=1&interim_results=false"
 
 
@@ -68,33 +65,3 @@ async def deepgram_stream(
         tasks = [sender_task, keep_alive_task]
         for task in tasks:
             task.cancel()
-
-
-class DeepgramChannel(AsyncChannel):
-    def __init__(
-        self,
-        deepgram_key: str,
-        input_stream: AsyncIterator[bytes],
-        notify_readable: Callable[[None], None] = None,
-    ) -> None:
-        super().__init__(notify_readable)
-        self.deepgram_stream = deepgram_stream(deepgram_key, input_stream)
-
-    async def read(self) -> AsyncIterator[str]:
-        yield await anext(self.deepgram_stream)
-
-
-class DeepgramSystem(System):
-    async def create_async_channel(
-        self,
-        deepgram_key: str,
-        input_stream: AsyncIterator[bytes],
-        notify_readable: Callable[[None], None],
-        **kwargs,
-    ) -> AsyncChannel:
-        deepgram_channel = DeepgramChannel(
-            deepgram_key=deepgram_key,
-            input_stream=input_stream,
-            notify_readable=notify_readable,
-        )
-        return deepgram_channel

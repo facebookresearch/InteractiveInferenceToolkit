@@ -7,9 +7,6 @@ from typing import AsyncIterator, Callable
 
 import groq
 
-from iftk.channel import AsyncChannel
-from iftk.system import System
-
 
 async def groq_sentence_stream(llm_stream: groq._client.AsyncStream) -> AsyncIterator:
     """An AsyncIterator wrapper for the groq generation stream.
@@ -32,28 +29,3 @@ async def groq_sentence_stream(llm_stream: groq._client.AsyncStream) -> AsyncIte
             if sentence:
                 yield sentence
             sentence = ""
-
-
-class GroqChannel(AsyncChannel):
-    def __init__(
-        self,
-        sentence_stream: groq._client.AsyncStream,
-        notify_readable: Callable[[None], None] = None,
-    ) -> None:
-        super().__init__(notify_readable)
-        self.sentence_stream = sentence_stream
-        self.groq_stream = groq_sentence_stream(sentence_stream=sentence_stream)
-
-    async def read(self) -> AsyncIterator[str]:
-        yield await anext(self.groq_stream)
-
-
-class GroqSystem(System):
-    async def create_async_channel(
-        self,
-        sentence_stream: groq._client.AsyncStream,
-        notify_readable: Callable[[None], None] = None,
-        **kwargs,
-    ) -> AsyncChannel:
-        groq_channel = GroqChannel(sentence_stream=sentence_stream)
-        return groq_channel
