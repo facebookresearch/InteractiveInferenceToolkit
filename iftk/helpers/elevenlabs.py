@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import AsyncIterator, Iterator, Optional
+from typing import Any, AsyncIterator, Callable, Iterator, Optional
 
 from elevenlabs.client import ElevenLabs
 
@@ -21,7 +21,7 @@ async def eleven_stream(
         messages (dict, optional): The message history of the dialogue system.
 
     Yields:
-        Iterator[AsyncIterator]: A bytes iterator for playing audio using 11Labs stream audio playing function.
+        Iterator[bytes]: A bytes iterator for playing audio using 11Labs stream audio playing function.
     """
     async for sentence in sentences:
         if sentence:
